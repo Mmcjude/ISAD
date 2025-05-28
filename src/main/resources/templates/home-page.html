@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <main class="dashboard-card">
+        <h1 class="welcome-title">Welcome,</h1>
+        <p class="role-subtitle">You are logged in as <strong th:text="${userRole}"></strong>. Tables accessible to you:</p>
+
+		<div class="section-divider"></div>
+
+        <section class="dashboard-section">
+            <h3>Plant Tables:</h3>
+            <a href="/plant/all" class="home-button"><span>Plants</span></a>
+            <a href="/plant/variety/all" class="home-button"><span>Varieties</span></a>
+        </section>
+
+		<div class="section-divider"></div>
+
+        <section class="dashboard-section">
+            <h3>Genetics and Breeding Tables:</h3>
+            <a href="/unit-of-genetics-and-breeding/sample/all" class="home-button"><span>Samples</span></a>
+			<a href="/unit-of-genetics-and-breeding/species/all" class="home-button"><span>Species</span></a>
+            <a href="/unit-of-genetics-and-breeding/gene-fragment-length/all" class="home-button"><span>Gene Fragment Length</span></a>
+            <a href="/unit-of-genetics-and-breeding/reference-gene/all" class="home-button"><span>Reference Gene</span></a>
+        </section>
+
+		<div class="section-divider"></div>
+
+        <section class="dashboard-section">
+            <h3>Geographic Information System Tables:</h3>
+            <a href="/gis/geographic-information-system/all" class="home-button"><span>Geographic Information System</span></a>
+            <a href="/gis/country/all" class="home-button"><span>Countries</span></a>
+            <a href="/gis/municipality/all" class="home-button"><span>Municipalities</span></a>
+            <a href="/gis/local-cordinate-system/all" class="home-button"><span>Local Coordinates System</span></a>
+            <a href="/gis/habitate/all" class="home-button"><span>Habitats</span></a>
+        </section>
+
+		<div th:if="${userRole == 'ADMIN'}" class="section-divider"></div>
+
+        <section class="dashboard-section" th:if="${userRole == 'ADMIN'}">
+            <h3>Weather Station Table:</h3>
+            <a href="/weather-station/all" class="home-button"><span>Weather Station</span></a>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

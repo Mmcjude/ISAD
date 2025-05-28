@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div th:fragment="header">
+		<header class="main-header">
+		  <div class="header-container">
+		    <h2 class="logo">Institute of Horticulture</h2>
+		    <nav>
+				<ul th:if="${#authorization.expression('isAuthenticated()')}" class="nav-links">
+					<li>
+						<a th:href="@{/}">Home</a>
+					</li>
+
+					<li class="dropdown">
+						<a href="#">Plants ▾</a>
+						<ul class="dropdown-content">
+							<li><a th:href="@{/plant/all}">Plants</a></li>
+							<li><a th:href="@{/plant/variety/all}">Varieties</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#">Genetics and Breeding ▾</a>
+						<ul class="dropdown-content">
+						<li><a th:href="@{/unit-of-genetics-and-breeding/sample/all}">Samples</a></li>
+						<li><a th:href="@{/unit-of-genetics-and-breeding/species/all}">Species</a></li>
+						<li><a th:href="@{/unit-of-genetics-and-breeding/gene-fragment-length/all}">Gene Fragment Length</a></li>
+						<li><a th:href="@{/unit-of-genetics-and-breeding/reference-gene/all}">Reference Gene</a></li>
+						</ul>
+					</li>
+
+					<li class="dropdown">
+						<a href="#">GIS ▾</a>
+						<ul class="dropdown-content">
+							<li><a th:href="@{/gis/geographic-information-system/all}">Geographic Information</a></li>
+							<li><a th:href="@{/gis/country/all}">Countries</a></li>
+							<li><a th:href="@{/gis/municipality/all}">Municipalities</a></li>
+							<li><a th:href="@{/gis/local-cordinate-system/all}">Local Coordinates</a></li>
+							<li><a th:href="@{/gis/habitate/all}">Habitats</a></li>
+						</ul>
+					</li>
+
+					<li th:if="${userRole == 'ADMIN'}">
+						<a th:href="@{/weather-station/all}">Weather Station</a>
+					</li>
+					
+					<li>
+						<a th:href="@{/logout}">Log out</a>
+					</li>
+				</ul>
+		    </nav>
+		  </div>
+		</header>
+    </div>
+</body>
+</html>

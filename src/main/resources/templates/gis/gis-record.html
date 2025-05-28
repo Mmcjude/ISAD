@@ -1,0 +1,124 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Geographic Information System Record Details</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <div class="form-wrapper">
+
+            <h2 class="form-title">Geographic Information:</h2>
+
+            <table class="form-table">
+                <colgroup>
+					<col style="width: 35%;">
+					<col style="width: 65%;">
+				</colgroup>
+
+                <tr>
+                    <td>ID</td>
+                    <td th:text="${gis.gisId}"></td>
+                </tr>
+                <tr>
+                    <td>Latitude</td>
+                    <td th:text="${gis.latitude}"></td>
+                </tr>
+                <tr>
+                    <td>Longitude</td>
+                    <td th:text="${gis.longitude}"></td>
+                </tr>
+                <tr>
+                    <td>Municipality (Link)</td>
+                    <td>
+                        <a th:if="${gis.municipality != null}"
+                            th:href="@{/gis/municipality/details/{id}(id=${gis.municipality.municipalityId})}"
+                            th:text="${gis.municipality.municipalityName}">
+                        </a>
+                        <span th:unless="${gis.municipality != null}" class="empty-msg">NULL</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Country (Link)</td>
+                    <td>
+                        <a th:if="${gis.municipality?.country != null}"
+                            th:href="@{/gis/country/details/{id}(id=${gis.municipality.country.countryId})}"
+                            th:text="${gis.municipality.country.countryName}">
+                        </a>
+                        <span th:unless="${gis.municipality?.country != null}" class="empty-msg">NULL</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Local Cordinates (Link)</td>
+                    <td>
+                        <a th:if="${gis.localLocation != null}"
+                            th:href="@{/gis/local-cordinate-system/details/{id}(id=${gis.localLocation.lcsId})}"
+                            th:text="'Field ' + ${gis.localLocation.fieldNumber} + ', Row ' + ${gis.localLocation.row} + ', No. ' + ${gis.localLocation.number}">
+                        </a>
+                        <span th:unless="${gis.localLocation != null}" class="empty-msg">NULL</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Habitate (Link)</td>
+                    <td>
+                        <a th:if="${gis.habitate != null}"
+                            th:href="@{/gis/habitate/details/{id}(id=${gis.habitate.habitateId})}"
+                            th:text="${gis.habitate.habitateName}">
+                        </a>
+                        <span th:unless="${gis.habitate != null}" class="empty-msg">NULL</span>
+                    </td>
+                </tr>
+                <tr th:if="${gis.plant != null and !gis.plant.isEmpty()}">
+                    <td>Plant Record(s) (Link)</td>
+                    <td>
+                        <details>
+                            <summary>
+                                <span th:text="${gis.plant.size()} + ' Plant Record(s) - Click to View'"></span>
+                            </summary>
+                            <ul>
+                                <li th:each="plant : ${gis.plant}">
+                                    <a th:href="@{/plant/details/{id}(id=${plant.plantId})}"
+                                        th:text="'ID: ' + ${plant.plantId} + ' - ' + ${plant.variety.name}">
+                                    </a>
+                                </li>
+                            </ul>
+                        </details>
+                    </td>
+                </tr>
+                <tr th:if="${gis.plant == null or gis.plant.isEmpty()}">
+                    <td>Plant Record(s) (Link)</td>
+                    <td class="empty-msg">No plant records associated.</td>
+                </tr>
+            </table>
+
+            <div class="form-button-row">
+				<div class="left-button">
+					<form th:action="@{'/gis/geographic-information-system/all'}" method="get" class="button-form" style="display:inline;">
+						<button type="submit" class="form-go-back">All Records</button>
+					</form>
+				</div>
+
+				<div class="right-buttons">
+					<form th:action="@{'/gis/geographic-information-system/update/' + ${gis.gisId}}" method="get" class="button-form"  style="display:inline;">
+						<button type="submit" class="edit-btn">Edit</button>
+					</form>
+
+					<form th:action="@{'/gis/geographic-information-system/delete/' + ${gis.gisId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
+						<button type="submit" class="delete-btn">Delete</button>
+					</form>
+			    </div>
+            </div>    
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+		function confirmDelete() {
+			return confirm("Are you sure you want to delete this record?");
+		}
+    </script>
+</body>
+</html>

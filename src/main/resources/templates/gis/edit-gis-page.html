@@ -1,0 +1,122 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit GIS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form th:action="@{/gis/geographic-information-system/update/__${id}__}" th:object="${gis}" method="post" class="form-wrapper narrow">
+            <h2 class="form-title">Edit GIS Record:</h2>
+
+                <div class="form-grid form-grid-single-column">
+                    <div class="form-group">
+                        <label for="gisId">GIS ID:</label>
+                        <input type="text" id="gisId" th:value="${gis.gisId}" class="form-input" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="latitude">Latitude:</label>
+                        <input type="number" class="form-input" id="latitude" th:field="*{latitude}" min="-90" max="90"
+                                step="any" required="required" />
+                        <small class="form-hint">Use at least 6 decimal places (e.g., 57.123456)</small>
+                        <p class="form-error" th:if="${#fields.hasErrors('latitude')}" th:errors="*{latitude}">Latitude Error</p>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="longitude">Longitude:</label>
+                        <input type="number" class="form-input" id="longitude" th:field="*{longitude}" min="-180" max="180"
+                                step="any" required="required" />
+                        <small class="form-hint">Use at least 6 decimal places (e.g., 57.123456)</small>
+                        <p class="form-error" th:if="${#fields.hasErrors('longitude')}" th:errors="*{longitude}">Longitude Error</p>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="municipality">Municipality:</label>
+                        <select th:field="*{municipality}" class="form-select choices-select" id="municipality" name="municipality.id" required>
+                            <option th:each="m : ${municipalities}" 
+                                    th:value="${m.municipalityId}" 
+                                    th:text="${m.country.countryName} + ', ' + ${m.municipalityName}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('municipality')}" th:errors="*{municipality}">Municipality Error</p>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="habitate">Habitate:</label>
+                        <select th:field="*{habitate}" class="form-select choices-select" id="habitate" name="habitate.id" required>
+                            <option th:each="h : ${habitates}" 
+                                    th:value="${h.habitateId}" 
+                                    th:text="${h.habitateName}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('habitate')}" th:errors="*{habitate}">Habitate Error</p>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="localLocation">Local Coordinates:</label>
+                        <select th:field="*{localLocation}" class="form-select choices-select" id="localLocation">
+                            <option value="">None - Not Local</option>
+                            <option th:each="l : ${locations}" 
+                                th:value="${l.lcsId}" 
+                                th:text="'Field ' + ${l.fieldNumber} + ', Row ' + ${l.row} + ', No. ' + ${l.number}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('localLocation')}" th:errors="*{localLocation}">Local Coordinates Error</p>
+                    </div>
+                </div>
+            
+                <div class="form-actions">
+                    <button class="form-submit" type="submit">Update Record</button>
+                </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const varietySelect = document.getElementById('habitate');
+            if (varietySelect) {
+                new Choices(varietySelect, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    fuseOptions: {
+                        threshold: 0.0,
+                        location: 0
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.choices-select').forEach(function(select) {
+                new Choices(select, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    maxItemCount: -1,
+                    shouldSort: false
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.querySelector("form").addEventListener("submit", function(e) {
+            const lat = document.getElementById("latitude").value;
+            const lng = document.getElementById("longitude").value;
+        
+            const sixDecimals = /^-?\d+\.\d{6,}$/;
+        
+            if (!sixDecimals.test(lat) || !sixDecimals.test(lng)) {
+                e.preventDefault();
+                alert("Latitude and Longitude must have at least 6 decimal places.");
+            }
+        });
+    </script>
+
+</body>
+</html>

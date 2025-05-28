@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Weather Station Record</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form action="#" th:action="@{/weather-station/update/__${id}__}" th:object="${weatherStation}" method="post" class="form-wrapper">
+            <div class="form-grid">
+                <h2 class="form-title">Edit Weather Station Record:</h2>
+
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="weatherId">Weather ID:</label>
+                        <input type="text" id="weatherId" th:field="*{weatherId}" class="form-input" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeType">Sunrise or Sunset:</label>
+                        <select th:field="*{timeType}" class="form-select" id="timeType">
+                            <option th:each="timeType : ${T(com.example.demo.model.enums.TimeType).values()}" 
+                                    th:value="${timeType}" 
+                                    th:text="${timeType.name()}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('timeType')}" th:errors="*{timeType}">Type Error</p>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="dateTime">Date & Time:</label>
+                        <input
+                            type="datetime-local"
+                            id="dateTime"
+                            name="dateTime"
+                            class="form-input"
+                            required
+                            th:value="${weatherStation.dateTime != null ? #temporals.format(weatherStation.dateTime, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+                        <p class="form-error" th:if="${#fields.hasErrors('dateTime')}" th:errors="*{dateTime}">Datetime Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="temperature">Temperature (°C):</label>
+                        <input type="number" id="temperature" th:field="*{temperatureCelcius}" class="form-input" min="-50" max="50" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('temperatureCelcius')}" th:errors="*{temperatureCelcius}">Temperature Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="windSpeed">Wind Speed (m/s):</label>
+                        <input type="number" id="windSpeed" th:field="*{windSpeed}" class="form-input" min="0" max="50" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('windSpeed')}" th:errors="*{windSpeed}">Wind Speed Error</p>
+                    </div>
+                </div>
+            
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="windDirection">Wind Direction (Cardinal Direction):</label>
+                        <select id="windDirection" th:field="*{windDirection}" class="form-select">
+                            <option th:each="dir : ${T(com.example.demo.model.enums.CardinalDirections).values()}"
+                                    th:value="${dir}" 
+                                    th:text="${dir.name()}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('windDirection')}" th:errors="*{windDirection}">Wind Direction Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currentRain">Current Rain (mm):</label>
+                        <input type="number" id="currentRain" th:field="*{currentRain}" class="form-input" min="0" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('currentRain')}" th:errors="*{currentRain}">Current Rain Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="totalRain">Total Rain (mm):</label>
+                        <input type="number" id="totalRain" th:field="*{totalRain}" class="form-input" min="0" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('totalRain')}" th:errors="*{totalRain}">Total Rain Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="solarRadiation">Solar Radiation (W/m²):</label>
+                        <input type="number" id="solarRadiation" th:field="*{solarRadiation}" class="form-input" min="0" max="1200" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('solarRadiation')}" th:errors="*{solarRadiation}">Solar Radiation Error</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="barometer">Barometer (mb):</label>
+                        <input type="number" id="barometer" th:field="*{barometer}" class="form-input" min="980" max="1050" required>
+                        <p class="form-error" th:if="${#fields.hasErrors('barometer')}" th:errors="*{barometer}">Barometer Error</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="form-submit" type="submit">Update Record</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

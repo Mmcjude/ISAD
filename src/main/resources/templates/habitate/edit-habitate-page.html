@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Habitate</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form action="#" th:action="@{/gis/habitate/update/__${id}__}" th:object="${habitate}" method="post" class="form-wrapper narrow">
+
+            <h2 class="form-title">Edit Habitate Record:</h2>
+
+            <div class="form-grid form-grid-single-column">
+                <div class="form-group">
+                    <label for="habitateId">Habitate ID:</label>
+                    <input type="text" id="habitateId" th:value="${habitate.habitateId}" class="form-input" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="habitateName">Habitate Name:</label>
+                    <input type="text" id="habitateName" pattern="^[A-Za-zĀ-Žā-ž'\- ]{2,50}$" 
+                        title="Name must be between 2 and 50 characters long. Only English and Latvian letters are allowed, along with apostrophes ('), hyphens (-), and spaces." 
+                        th:field="*{habitateName}" class="form-input" required />
+                    <p class="form-error" th:if="${#fields.hasErrors('habitateName')}" th:errors="*{habitateName}">Name Error</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="form-submit" type="submit">Update Record</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Plant Record</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form action="#" th:action="@{/plant/update/__${id}__}" th:object="${plant}" method="post" class="form-wrapper narrow">
+            <h2 class="form-title">Edit Plant Record:</h2>
+
+            <div class="form-grid form-grid-single-column">
+                <div class="form-column">
+                    <div class="form-group">
+                        <label for="plantId">Plant ID:</label>
+                        <input type="text" id="plantId" th:value="${plant.plantId}" class="form-input" disabled>
+                    </div>    
+
+                    <div class="form-group">
+                        <label for="variety">Variety:</label>
+                        <select th:field="*{variety}" class="form-select choices-select" id="variety" required>
+                            <option value="" disabled>Select Variety</option>
+                            <option th:each="var : ${varieties}"
+                                    th:value="${var.varietyId}"
+                                    th:text="${var.name}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('variety')}" th:errors="*{variety}">Variety Error</p>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="additionalNotes">Additional Notes:</label>
+                        <textarea th:field="*{additionalNotes}" rows="4" cols="40" class="form-input auto-expand"></textarea>
+                        <p class="form-error" th:if="${#fields.hasErrors('additionalNotes')}" th:errors="*{additionalNotes}">Additional Notes Error</p>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="origin">Origin:</label>
+                        <select th:field="*{origin}" class="form-select" id="origin" required>
+                            <option th:each="origin : ${T(com.example.demo.model.enums.PlantOrigin).values()}"
+                                    th:value="${origin}"
+                                    th:text="${origin.name()}"></option>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('origin')}" th:errors="*{origin}">Origin Error</p>
+                    </div>
+                
+                    <div class="form-group" id="status-group" style="display: none;">
+                        <label for="status">Status (only for local plants):</label>
+                        <select th:field="*{status}" class="form-select" id="status">
+                            <option value="">None</option>
+                            <option th:each="status : ${T(com.example.demo.model.enums.PlantStatus).values()}"
+                                    th:value="${status}"
+                                    th:text="${status.name()}">
+                            </option>
+                        </select>
+                        <small class="form-hint">Choose the status "Planted" or "Removed" for local plants and keep "None" for external plants.</small>
+                        <p class="form-error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}">Status Error</p>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="gis">GIS Location:</label>
+                        <select th:field="*{gis}" class="form-select choices-select" id="gis" required>
+                            <option value="" disabled>Select GIS Location</option>
+                            <optgroup id="group-planted" label="Available Local Coordinates - 'Planted'">
+                                <option th:each="g : ${gisPlanted}" th:value="${g.gisId}" th:text="'Field ' + ${g.localLocation.fieldNumber} + ', Row '  + ${g.localLocation.row} + ', No.' + ${g.localLocation.number}"></option>
+                            </optgroup>
+                            
+                            <optgroup id="group-removed" label="All Local Coordinates - 'Removed'">
+                                <option th:each="g : ${gisRemoved}" th:value="${g.gisId}" th:text="'Field ' + ${g.localLocation.fieldNumber} + ', Row '  + ${g.localLocation.row} + ', No.' + ${g.localLocation.number}"></option>
+                            </optgroup>
+        
+                            <optgroup id="group-external" label="External Coordinates">
+                                <option th:each="g : ${gisExternal}" th:value="${g.gisId}" th:text=" ${g.municipality.country.countryName} + ', ' + ${g.municipality.municipalityName} + ' (' + ${g.latitude} + ', ' + ${g.longitude} + ') ' + ' - ID: ' + ${g.gisId}"></option>
+                            </optgroup>
+                        </select>
+                        <p class="form-error" th:if="${#fields.hasErrors('gis')}" th:errors="*{gis}">GIS Error</p>
+                    </div>
+                </div>
+            </div>    
+            <div class="form-actions">
+                <button class="form-submit" type="submit">Update Record</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function toggleStatusField() {
+            const originSelect = document.getElementById('origin');
+            const statusGroup = document.getElementById('status-group');
+
+            if (originSelect.value === 'Local') {
+                statusGroup.style.display = 'block';
+            } else {
+                statusGroup.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const originSelect = document.getElementById('origin');
+
+            originSelect.addEventListener('change', toggleStatusField);
+
+            toggleStatusField();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const varietySelect = document.getElementById('variety');
+            if (varietySelect) {
+                new Choices(varietySelect, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    fuseOptions: {
+                        threshold: 0.0,
+                        location: 0
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.choices-select').forEach(function(select) {
+                if (select.id !== 'variety') {
+                    new Choices(select, {
+                        searchEnabled: true,
+                        itemSelectText: '',
+                        shouldSort: false
+                    });
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const textareas = document.querySelectorAll('.auto-expand');
+            textareas.forEach(textarea => {
+                function autoExpand() {
+                    this.style.height = '42px';
+                    this.style.height = this.scrollHeight + 'px';
+                }
+                autoExpand.call(textarea);
+                textarea.addEventListener('input', autoExpand);
+            });
+        });
+    </script>
+
+</body>
+</html>
+

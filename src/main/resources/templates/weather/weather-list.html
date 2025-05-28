@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Station Table</title>
+	<link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+    <div class = "main-content">
+        <h2>Weather Station Table</h2>
+        <div class="add-button-container">
+            <button class="add-button" onclick="window.location='/weather-station/create'">
+                <span>Add Record</span>
+            </button>
+        </div>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Sunrise/Sunset</th>
+                    <th>Date & Time</th>
+                    <th>Temperature (°C)</th>
+                    <th>Wind Speed (m/s)</th>
+                    <th>Wind Direction</th>
+                    <th>Current Rain (mm)</th>
+                    <th>Total Rain (mm)</th>
+                    <th>Solar Radiation (W/m²)</th>
+                    <th>Barometer (mb)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="weather : ${weatherStations}">
+                    <td th:text="${weather.weatherId}"></td>
+                    <td th:text="${weather.timeType}"></td>
+                    <td th:text="${#temporals.format(weather.dateTime, 'dd MMM yyyy, HH:mm')}"></td>
+                    <td th:text="${weather.temperatureCelcius}"></td>
+                    <td th:text="${weather.windSpeed}"></td>
+                    <td th:text="${weather.windDirection}"></td>
+                    <td th:text="${weather.currentRain}"></td>
+                    <td th:text="${weather.totalRain}"></td>
+                    <td th:text="${weather.solarRadiation}"></td>
+                    <td th:text="${weather.barometer}"></td>
+                    <td>
+                        <form th:action="@{'/weather-station/details/' + ${weather.weatherId}}" method="get" style="display:inline;">
+                            <button type="submit" class="view-btn">View</button>
+                        </form>
+                        <form th:action="@{'/weather-station/update/' + ${weather.weatherId}}" method="get" style="display:inline;">
+                            <button type="submit" class="edit-btn">Edit</button>
+                        </form>
+                        <form th:action="@{'/weather-station/delete/' + ${weather.weatherId}}" method="get" style="display:inline;" onsubmit="return confirmDelete()">
+                            <button type="submit" class="delete-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this record?");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>Specie Record Information</title>
+	<link rel="stylesheet" href="/css/styles.css">
+</head>	
+<body>
+	<div th:replace="~{fragments/header :: header}"></div>
+
+	<div class="main-content">
+		<div class="form-wrapper">
+			<h2 class="form-title">Species Information:</h2>
+
+			<table class="form-table">
+				<colgroup>
+					<col style="width: 35%;">
+					<col style="width: 65%;">
+				</colgroup>
+
+				<tr>
+					<td>ID</td>
+					<td th:text="${species.speciesId}"></td>
+				</tr>
+				<tr>
+					<td>Species Name</td>
+					<td th:text="${species.name}"></td>
+				</tr>
+				<tr th:if="${species.samples != null and !species.samples.isEmpty()}">
+					<td>Sample Record(s) (Link)</td>
+					<td>
+					<details>
+						<summary>
+						<span th:text="${species.samples.size()} + ' Sample(s) - Click to View'"></span>
+						</summary>
+						<ul>
+						<li th:each="sample : ${species.samples}">
+							<a th:href="@{/unit-of-genetics-and-breeding/sample/details/{id}(id=${sample.sampleId})}"
+							th:text="'ID ' + ${sample.sampleId} + ' - ' + ${#temporals.format(sample.localDate, 'yyyy-MM-dd')}">
+							</a>
+						</li>
+						</ul>
+					</details>
+					</td>
+				</tr>
+
+				<tr th:if="${species.samples == null or species.samples.isEmpty()}">
+					<td>Sample Record(s) (Link)</td>
+					<td class="empty-msg">No sample records associated.</td>
+				</tr>
+			</table>
+
+			<div class="form-button-row">
+				<div class="left-button">
+					<form th:action="@{'/unit-of-genetics-and-breeding/species/all'}" method="get" class="button-form" style="display:inline;">
+						<button type="submit" class="form-go-back">All Records</button>
+					</form>
+				</div>
+
+				<div class="right-buttons">
+					<form th:action="@{'/unit-of-genetics-and-breeding/species/update/' + ${species.speciesId}}" method="get" class="button-form"  style="display:inline;">
+						<button type="submit" class="edit-btn">Edit</button>
+					</form>
+
+					<form th:action="@{'/unit-of-genetics-and-breeding/species/delete/' + ${species.speciesId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
+						<button type="submit" class="delete-btn">Delete</button>
+					</form>
+			    </div>
+            </div>
+		</div>
+	</div>
+	
+	<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>		
+</html>

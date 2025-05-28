@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Local Cordinate System Record</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form action="#" th:action="@{/gis/local-cordinate-system/update/__${id}__}" th:object="${location}" method="post" class="form-wrapper narrow">
+            <h2 class="form-title">Edit Local Coordinate Record:</h2>
+
+            <div class="form-grid form-grid-single-column">
+                <div class="form-group">
+                    <label for="lcsId">Local Coordinate ID:</label>
+                    <input type="text" id="lcsId" th:value="${location.lcsId}" class="form-input" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="fieldNumber">Field Number:</label>
+                    <input type="number" id="fieldNumber" th:field="*{fieldNumber}" class="form-input" min="1" required>
+                    <p class="form-error" th:if="${#fields.hasErrors('fieldNumber')}" th:errors="*{fieldNumber}">Field Number Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="row">Row Number:</label>
+                    <input type="number" id="row" th:field="*{row}" class="form-input" min="1" required>
+                    <p class="form-error" th:if="${#fields.hasErrors('row')}" th:errors="*{row}">Row Number Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="number">Number:</label>
+                    <input type="number" id="number" th:field="*{number}" class="form-input" min="1" required>
+                    <p class="form-error" th:if="${#fields.hasErrors('number')}" th:errors="*{number}">Number Error</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="form-submit" type="submit">Update Record</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Sample</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div class="main-content">
+        <form th:action="@{/unit-of-genetics-and-breeding/sample/update/__${id}__}" 
+            th:object="${sample}" 
+            method="post" 
+            class="form-wrapper narrow">
+            
+            <h2 class="form-title">Edit Sample Record:</h2>
+
+            <div class="form-grid form-grid-single-column">
+                <div class="form-group">
+                    <label for="sampleId">Sample ID:</label>
+                    <input type="text" id="sampleId" th:value="${sample.sampleId}" class="form-input" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="nucleicType">Nucleic Acid Type:</label>
+                    <select th:field="*{nucleicType}" class="form-select" id="nucleicType" required>
+                        <option value="" disabled selected>Select Type</option>
+                        <option th:each="type : ${T(com.example.demo.model.enums.NucleicAcidType).values()}"
+                                th:value="${type}" 
+                                th:text="${type.name()}">
+                        </option>
+                    </select>
+                    <p class="form-error" th:if="${#fields.hasErrors('nucleicType')}" th:errors="*{nucleicType}">Nucleic Type Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="localDate">Collection Date:</label>
+                    <input type="date" 
+                            id="localDate" 
+                            class="form-input" 
+                            name="localDate" 
+                            required 
+                            th:value="${sample.localDate != null} ? ${#temporals.format(sample.localDate, 'yyyy-MM-dd')} : ''" />
+                    <p class="form-error" th:if="${#fields.hasErrors('localDate')}" th:errors="*{localDate}">Collection Date Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="concentration">Concentration:</label>
+                    <input type="number" class="form-input" id="concentration" th:field="*{concentration}" min="0" step="any" required />
+                    <p class="form-error" th:if="${#fields.hasErrors('concentration')}" th:errors="*{concentration}">Concentration Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="specie">Species:</label>
+                    <select th:field="*{specie}" class="form-select choices-select" id="specie" required>
+                        <option value="" disabled selected>Select Species</option>
+                        <option th:each="s : ${species}"
+                                th:value="${s.speciesId}"
+                                th:text="'ID ' + ${s.speciesId} + ' - ' + ${s.name}"></option>
+                    </select>
+                    <p class="form-error" th:if="${#fields.hasErrors('specie')}" th:errors="*{specie}">Species Error</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="plant">Plant:</label>
+                    <select th:field="*{plant}" class="form-select choices-select" id="plant" required>
+                        <option value="" disabled selected>Select Plant</option>
+                        <option th:each="p : ${plants}"
+                                th:value="${p.plantId}"
+                                th:text="'ID ' + ${p.plantId} + ' - ' + (${p.variety != null ? p.variety.name : 'No Variety (NULL)'})">
+                        </option>
+                    </select>
+                    <p class="form-error" th:if="${#fields.hasErrors('plant')}" th:errors="*{plant}">Plant Error</p>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="form-submit" type="submit">Update Record</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const varietySelect = document.getElementById('specie');
+            if (varietySelect) {
+                new Choices(varietySelect, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    fuseOptions: {
+                        threshold: 0.0,
+                        location: 0
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.choices-select').forEach(function(select) {
+                if (select.id !== 'variety') {
+                    new Choices(select, {
+                        searchEnabled: true,
+                        itemSelectText: '',
+                        shouldSort: false
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
