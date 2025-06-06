@@ -21,7 +21,7 @@ public class IsadTestApplication {
 		SpringApplication.run(IsadTestApplication.class, args);
 	}
 	
-	/*@Bean
+	/**@Bean
 	public CommandLineRunner testModel(IMyAuthorityRepo authRepo, 
 			IMyUserRepo userRepo) {
 		return new CommandLineRunner() {
@@ -37,12 +37,12 @@ public class IsadTestApplication {
 				userRepo.save(u3);
 				
 				
-				/*MyAuthority a1 = new MyAuthority("ADMIN");
-				MyAuthority a2 = new MyAuthority("STUFF");
+				MyAuthority a1 = new MyAuthority("ADMIN");
+				MyAuthority a2 = new MyAuthority("STAFF");
 				authRepo.saveAll(Arrays.asList(a1, a2));
 				
 				MyUser u1 = new MyUser("admin", encoder.encode("Adm1n"), a1);
-				MyUser u2 = new MyUser("stuff", encoder.encode("$tuff"), a2);
+				MyUser u2 = new MyUser("staff", encoder.encode("staff.qwerty"), a2);
 				
 				a1.setUsers(Arrays.asList(u1));
 				a2.setUsers(Arrays.asList(u2));
@@ -50,6 +50,6 @@ public class IsadTestApplication {
 
 			}
 		};
-	}*/
+	}**/
 
 }

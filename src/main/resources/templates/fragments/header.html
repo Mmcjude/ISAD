@@ -42,7 +42,9 @@
 					<li th:if="${userRole == 'ADMIN'}">
 						<a th:href="@{/weather-station/all}">Weather Station</a>
 					</li>
-					
+					<li>
+						<a th:if="${role.equals('ADMIN')}" th:href="@{/admin/user/all}">Users</a>
+					</li>
 					<li>
 						<a th:href="@{/logout}">Log out</a>
 					</li>

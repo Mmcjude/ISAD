@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit User</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="main-content">
+    <form th:action="@{'/admin/user/update/' + ${user.uid}}" th:object="${user}" method="post" class="form-wrapper">
+        <h2 class="form-title">Edit User:</h2>
+
+        <div class="error-message" th:if="${error}" th:text="${error}"></div>
+
+        <div class="form-grid-single-column">
+
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" th:field="*{username}"
+                       pattern="[A-Za-z. ]{2,20}"
+                       title="Username must be 2–20 characters long. Only English letters, dots, and spaces allowed."
+                       class="form-input" required readonly>
+                <p class="form-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</p>
+            </div>
+			<div class="form-group">
+			    <label for="password">New Password:</label>
+			    <input type="password" id="password" th:field="*{password}" 
+					minlength="5" maxlength="100"
+                    title="Password must be 5–100 characters long."
+                    class="form-input"
+				    placeholder="Leave blank to keep current password" oninput="handlePasswordInput()">
+			</div>
+
+			<div class="form-group" id="confirmPasswordGroup" style="display: none;">
+			    <label for="confirmPassword">Confirm New Password:</label>
+			    <input type="password" class="form-input" id="confirmPassword" placeholder="Repeat new password">
+			</div>
+
+            <div class="form-group">
+                <label for="authority">Authority:</label>
+				<select name="authorityId" class="form-select choices-select">
+				    <option th:each="auth : ${authorities}"
+				            th:value="${auth.aid}"
+				            th:text="${auth.title}"
+							th:selected="${auth.aid == user.authority.aid}"> 
+				    </option>
+				</select>
+
+                <p class="form-error" th:if="${#fields.hasErrors('authority')}" th:errors="*{authority}">Authority Error</p>
+            </div>
+
+            <div class="form-actions">
+                <button class="form-submit" type="submit" onclick="return confirmUpdate()">Save Changes</button>
+            </div>
+
+        </div>
+		
+    </form>
+</div>
+
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script>
+		    function handlePasswordInput() {
+		        const password = document.getElementById("password").value;
+		        const confirmGroup = document.getElementById("confirmPasswordGroup");
+
+		        confirmGroup.style.display = password ? "block" : "none";
+		    }
+
+		    document.querySelector("form").addEventListener("submit", function(e) {
+		        const password = document.getElementById("password").value;
+		        const confirmPassword = document.getElementById("confirmPassword").value;
+
+		        if (password && password !== confirmPassword) {
+		            e.preventDefault();
+		            alert("Passwords do not match!");
+		        }
+		    });
+		</script>
+		
+		<script>
+		function confirmUpdate() {
+		    const select = document.querySelector('select[name="authorityId"]');
+		    const selectedOption = select.options[select.selectedIndex];
+		    const title = selectedOption.getAttribute('data-title') || selectedOption.text;
+
+		    if (title === 'ADMIN') {
+		        return confirm(
+		            "Are you sure you want to update a user to have ADMIN privileges?\n" +
+		            "Please note that admin users cannot be deleted or edited via the user interface without direct DB intervention."
+		        );
+		    } else {
+		        return confirm("Are you sure you want to update this user?");
+		    }
+		}
+		</script>
+</body>
+</html>
+
