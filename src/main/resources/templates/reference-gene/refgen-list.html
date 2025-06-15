@@ -12,7 +12,7 @@
         <h2>Reference Gene Table</h2>
 
         <div class="add-button-container">
-            <button class="add-button" onclick="window.location='/unit-of-genetics-and-breeding/reference-gene/create'">
+            <button th:if="${!role.equals('STAFF')}" class="add-button" onclick="window.location='/unit-of-genetics-and-breeding/reference-gene/create'">
                 <span>Add Record</span>
             </button>
         </div>
@@ -39,10 +39,10 @@
                         <form th:action="@{'/unit-of-genetics-and-breeding/reference-gene/details/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;">
                             <button type="submit" class="view-btn">View</button>
                         </form>
-                        <form th:action="@{'/unit-of-genetics-and-breeding/reference-gene/update/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;">
+                        <form th:if="${!role.equals('STAFF')}" th:action="@{'/unit-of-genetics-and-breeding/reference-gene/update/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;">
                             <button type="submit" class="edit-btn">Edit</button>
                         </form>
-                        <form th:action="@{'/unit-of-genetics-and-breeding/reference-gene/delete/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;" onsubmit="return confirmDelete()">
+                        <form th:if="${!role.equals('STAFF')}" th:action="@{'/unit-of-genetics-and-breeding/reference-gene/delete/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;" onsubmit="return confirmDelete()">
                             <button type="submit" class="delete-btn">Delete</button>
                         </form>
 

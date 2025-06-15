@@ -35,7 +35,7 @@ public class MyUser {
 	
 
 	@NotNull
-	@Pattern(regexp = "[A-Za-z. ]{2,20}", message = "Only letters are allowed and the first one should be capital. Size 2-20 ")
+	@Pattern(regexp = "[A-Za-z. ]{2,20}", message = "Only letters are allowed. Size 2-20 ")
 	@Column(name = "Username", unique = true)
 	private String username;
 	
