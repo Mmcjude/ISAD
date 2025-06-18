@@ -69,11 +69,11 @@
 			</div>
 
 			<div class="right-buttons">
-				<form th:action="@{'/gis/municipality/update/' + ${municipality.municipalityId}}" method="get" class="button-form"  style="display:inline;">
+				<form th:if="${!role.equals('STAFF')}" th:action="@{'/gis/municipality/update/' + ${municipality.municipalityId}}" method="get" class="button-form"  style="display:inline;">
 					<button type="submit" class="edit-btn">Edit</button>
 				</form>
 
-				<form th:action="@{'/gis/municipality/delete/' + ${municipality.municipalityId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
+				<form th:if="${!role.equals('STAFF')}" th:action="@{'/gis/municipality/delete/' + ${municipality.municipalityId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
 					<button type="submit" class="delete-btn">Delete</button>
 				</form>
 			</div>

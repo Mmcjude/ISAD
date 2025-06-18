@@ -64,6 +64,14 @@ public class Samples {
 	@ToString.Exclude
 	private Collection<ReferenceGene> references = new ArrayList<ReferenceGene>();
 	
+	@OneToMany(mappedBy = "sample")
+	@ToString.Exclude
+	private Collection<Sequencing> sequencing = new ArrayList<Sequencing>();
+	
+	@OneToMany(mappedBy = "sample")
+	@ToString.Exclude
+	private Collection<GeneExpression> expressions = new ArrayList<GeneExpression>();
+	
 	public Samples(NucleicAcidType inputNucleicType, LocalDate inputCollectionDate, Species inputSpecies,
 			float inputConcentration, Plant inputPlant) {
 		setNucleicType(inputNucleicType);

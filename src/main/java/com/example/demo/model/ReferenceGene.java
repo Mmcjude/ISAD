@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -10,7 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -52,7 +55,6 @@ public class ReferenceGene {
 	
 	@Column(name = "GeneSequence", columnDefinition = "TEXT")
 	@NotBlank(message = "Gene sequence must not be blank.")
-	@Lob
 	@Basic(fetch = FetchType.EAGER)
 	@Pattern(regexp = "^[ACGTNU]+$", message = "Gene sequence contains invalid characters. Only A, C, G, T, N, and U are allowed.")
 	private String geneSequence;
@@ -61,12 +63,22 @@ public class ReferenceGene {
 	@JoinColumn(name = "SampleId", nullable = true)
 	private Samples sample;
 	
+	@ManyToMany
+	@JoinTable(
+	    name = "ReferenceGene_Project",
+	    joinColumns = @JoinColumn(name = "ReferenceGeneId"),
+	    inverseJoinColumns = @JoinColumn(name = "ProjectId")
+	)
+	@ToString.Exclude
+	private Collection<Project> projects = new ArrayList<Project>();
+	
 	public ReferenceGene(String geneReferencecName, String publicationReference, 
-			LocalDate date, String geneSequence, Samples sample) {
+			LocalDate date, String geneSequence, Samples sample, ArrayList<Project> projects) {
 		setGeneReferenceName(geneReferencecName);
 		setPublicationReference(publicationReference);
 		setDate(date);
 		setGeneSequence(geneSequence);
 		setSample(sample);
+		setProjects(projects);
 	}
 }

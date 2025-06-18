@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.model.ReferenceGene;
 import com.example.demo.repo.IReferenceGeneRepo;
+import com.example.demo.service.IProjectCRUDService;
 import com.example.demo.service.IReferenceGeneCRUDService;
 import com.example.demo.service.ISamplesCRUDService;
 
@@ -32,6 +34,9 @@ public class ReferenceGeneCRUDController {
 	@Autowired
 	private IReferenceGeneRepo refgenRepo;
 	
+	@Autowired
+	private IProjectCRUDService projectService;
+	
 	@GetMapping("/create") // localhost:8080/unit-of-genetics-and-breeding/reference-gene/create
     public String getControllerCreateReferenceGeneRecord(Model model) {
 		ReferenceGene refgen = new ReferenceGene();
@@ -40,6 +45,7 @@ public class ReferenceGeneCRUDController {
 		}
         model.addAttribute("refgen", refgen);
         model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        model.addAttribute("projects", projectService.retrieveAllProjectRecords());
         return "reference-gene/create-refgen-page";
     }
 
@@ -50,12 +56,13 @@ public class ReferenceGeneCRUDController {
     	
         if (result.hasErrors()) {
         	model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        	model.addAttribute("projects", projectService.retrieveAllProjectRecords());
         	return "reference-gene/create-refgen-page";
         }
 
         try {            
             refgenService.insertNewReferenceGene(refgen.getGeneReferenceName(), refgen.getPublicationReference(), 
-            		refgen.getDate(), refgen.getGeneSequence(), refgen.getSample());
+            		refgen.getDate(), refgen.getGeneSequence(), refgen.getSample(), new ArrayList<>(refgen.getProjects()));
             return "redirect:/unit-of-genetics-and-breeding/reference-gene/all";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -93,6 +100,7 @@ public class ReferenceGeneCRUDController {
         	ReferenceGene foundReference = refgenService.retrieveReferenceGeneById(id);
             model.addAttribute("refgen", foundReference);
             model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+            model.addAttribute("projects", projectService.retrieveAllProjectRecords());
             return "reference-gene/edit-refgen-page";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -107,12 +115,13 @@ public class ReferenceGeneCRUDController {
             Model model) {
         if (result.hasErrors()) {
         	model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        	model.addAttribute("projects", projectService.retrieveAllProjectRecords());
             return "reference-gene/edit-refgen-page";
         }
 
         try {          
             refgenService.updateReferenceGeneById(id, refgen.getGeneReferenceName(), refgen.getPublicationReference(), 
-            		refgen.getDate(), refgen.getGeneSequence(), refgen.getSample());
+            		refgen.getDate(), refgen.getGeneSequence(), refgen.getSample(), new ArrayList<>(refgen.getProjects()));
             return "redirect:/unit-of-genetics-and-breeding/reference-gene/all";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

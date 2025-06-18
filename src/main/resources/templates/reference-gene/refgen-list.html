@@ -25,6 +25,7 @@
                     <th>Publication Reference</th>
                     <th>Date</th>
                     <th>Sample ID</th>
+                    <th>Associated Projects</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -32,9 +33,13 @@
                 <tr th:each="tempR : ${refgen}">
                     <td th:text="${tempR.referenceGeneId}"></td>
                     <td th:text="${tempR.geneReferenceName}"></td>
-                    <td th:text="${tempR.publicationReference}" class="truncate"></td>
+                    <td th:attr="title=${tempR.publicationReference}"
+                        th:text="${#strings.abbreviate(tempR.publicationReference, 40)}"
+                        class="truncate">
+                    </td>
                     <td th:text="${#temporals.format(tempR.date, 'dd MMM yyyy')}"></td>
                     <td th:text="${tempR.sample != null ? tempR.sample.sampleId : 'NULL'}"></td>
+                    <td th:text="${tempR.projectCount} + ' linked'"></td>
                     <td>
                         <form th:action="@{'/unit-of-genetics-and-breeding/reference-gene/details/' + ${tempR.referenceGeneId}}" method="get" style="display:inline;">
                             <button type="submit" class="view-btn">View</button>

@@ -87,7 +87,7 @@
                 </tr>
                 <tr th:if="${sample.fragments == null or sample.fragments.isEmpty()}">
                     <td>Gene Fragment Length(s) (Link)</td>
-                    <td class="empty-msg">No fragments found.</td>
+                    <td class="empty-msg">No fragments associated.</td>
                 </tr>
 
                 <tr th:if="${referenceLinks != null and !referenceLinks.isEmpty()}">
@@ -106,7 +106,43 @@
                 </tr>
                 <tr th:if="${referenceLinks == null or referenceLinks.isEmpty()}">
                     <td>Reference Gene(s) (Link)</td>
-                    <td class="empty-msg">No references found.</td>
+                    <td class="empty-msg">No reference gene records associated.</td>
+                </tr>
+                 <tr th:if="${sample.sequencing != null and !sample.sequencing.isEmpty()}">
+                    <td>Sequencing Record(s) (Link)</td>
+                    <td>
+                        <details>
+                            <summary><span th:text="${sample.sequencing.size()} + ' Sequencing Record(s) - Click to View'"></span></summary>
+                            <ul>
+                                <li th:each="seq : ${sample.sequencing}">
+                                    <a th:href="@{/unit-of-genetics-and-breeding/sequencing/details/{id}(id=${seq.sequencingId})}"
+                                    th:text="'ID ' + ${seq.sequencingId} + ' - ' + ${seq.name}"></a>
+                                </li>
+                            </ul>
+                        </details>
+                    </td>
+                </tr>
+                <tr th:if="${sample.sequencing == null or sample.sequencing.isEmpty()}">
+                    <td>Sequencing Record(s) (Link)</td>
+                    <td class="empty-msg">No sequencing records associated.</td>
+                </tr>
+                 <tr th:if="${sample.expressions != null and !sample.expressions.isEmpty()}">
+                    <td>Gene Expression Record(s) (Link)</td>
+                    <td>
+                        <details>
+                            <summary><span th:text="${sample.expressions.size()} + ' Expression Record(s) - Click to View'"></span></summary>
+                            <ul>
+                                <li th:each="exp : ${sample.expressions}">
+                                    <a th:href="@{/unit-of-genetics-and-breeding/gene-expression/details/{id}(id=${exp.expressionId})}"
+                                    th:text="'ID ' + ${exp.expressionId} + ' - ' + ${exp.expressionName}"></a>
+                                </li>
+                            </ul>
+                        </details>
+                    </td>
+                </tr>
+                <tr th:if="${sample.expressions == null or sample.expressions.isEmpty()}">
+                    <td>Gene Expression Record(s) (Link)</td>
+                    <td class="empty-msg">No gene expression records associated.</td>
                 </tr>
 
             </table>
@@ -119,11 +155,11 @@
 				</div>
 
 				<div class="right-buttons">
-					<form th:action="@{'/unit-of-genetics-and-breeding/sample/update/' + ${sample.sampleId}}" method="get" class="button-form"  style="display:inline;">
+					<form th:if="${!role.equals('STAFF')}" th:action="@{'/unit-of-genetics-and-breeding/sample/update/' + ${sample.sampleId}}" method="get" class="button-form"  style="display:inline;">
 						<button type="submit" class="edit-btn">Edit</button>
 					</form>
 
-					<form th:action="@{'/unit-of-genetics-and-breeding/sample/delete/' + ${sample.sampleId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
+					<form th:if="${!role.equals('STAFF')}" th:action="@{'/unit-of-genetics-and-breeding/sample/delete/' + ${sample.sampleId}}" method="get" class="button-form"  style="display:inline;" onsubmit="return confirmDelete()">
 						<button type="submit" class="delete-btn">Delete</button>
 					</form>
 				</div>

@@ -8,8 +8,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Project;
 import com.example.demo.model.ReferenceGene;
 import com.example.demo.model.Samples;
+import com.example.demo.repo.IProjectRepo;
 import com.example.demo.repo.IReferenceGeneRepo;
 import com.example.demo.service.IReferenceGeneCRUDService;
 
@@ -17,10 +19,13 @@ import com.example.demo.service.IReferenceGeneCRUDService;
 public class ReferenceGeneCRUDImpl implements IReferenceGeneCRUDService {
 	@Autowired
 	private IReferenceGeneRepo refgenRepo;
-
+	
+	@Autowired
+	private IProjectRepo projectRepo;
+	
 	@Override
 	public void insertNewReferenceGene(String geneReferencecName, String publicationReference, LocalDate date,
-			String geneSequence, Samples sample) throws Exception {
+			String geneSequence, Samples sample, ArrayList<Project> projects) throws Exception {
 		if(geneReferencecName == null || geneReferencecName.trim().isEmpty() ||
 				publicationReference == null || publicationReference.trim().isEmpty() ||
 				date == null || geneSequence == null || geneSequence.trim().isEmpty() ||
@@ -44,7 +49,23 @@ public class ReferenceGeneCRUDImpl implements IReferenceGeneCRUDService {
 			 throw new Exception("Reference Gene with the name '" + geneReferencecName.trim() + "' already exists. Name must be unique.");
 		}
 		
-		refgenRepo.save(new ReferenceGene(geneReferencecName.trim(), publicationReference.trim(), date, geneSequence.trim(), sample));
+		ArrayList<Project> validatedProjects = new ArrayList<>();
+		if (projects != null && !projects.isEmpty()) {
+			for (Project p : projects) {
+				if (p == null || !projectRepo.existsById(p.getProjectId())) {
+					throw new Exception("Invalid project in the list: project does not exist or is null.");
+				}
+				validatedProjects.add(projectRepo.findById(p.getProjectId()).get());
+			}
+		}
+		
+		ReferenceGene refGen = new ReferenceGene(geneReferencecName.trim(), publicationReference.trim(), date, geneSequence.trim(), sample, validatedProjects);
+		refgenRepo.save(refGen);
+		
+		for(Project project : validatedProjects) {
+			project.getReferenceGenes().add(refGen);
+			projectRepo.save(project);
+		}
 	}
 
 	@Override
@@ -67,7 +88,7 @@ public class ReferenceGeneCRUDImpl implements IReferenceGeneCRUDService {
 
 	@Override
 	public void updateReferenceGeneById(long id, String geneReferencecName, String publicationReference, LocalDate date,
-			String geneSequence, Samples sample) throws Exception {
+			String geneSequence, Samples sample, ArrayList<Project> projects) throws Exception {
 		if(geneReferencecName == null || geneReferencecName.trim().isEmpty() ||
 				publicationReference == null || publicationReference.trim().isEmpty() ||
 				date == null || geneSequence == null || geneSequence.trim().isEmpty() ||
@@ -94,17 +115,47 @@ public class ReferenceGeneCRUDImpl implements IReferenceGeneCRUDService {
 			 throw new Exception("Reference Gene with the name '" + geneReferencecName.trim() + "' already exists. Name must be unique.");
 		 }
 		 
+		 List<Project> validatedProjects = new ArrayList<>();
+		 if (projects != null && !projects.isEmpty()) {
+			 for (Project project : projects) {
+				 if (project == null || !projectRepo.existsById(project.getProjectId())) {
+					 throw new Exception("Invalid project in the list: project does not exist or is null.");
+				 }
+				 validatedProjects.add(projectRepo.findById(project.getProjectId()).get());
+			 }
+		 }
+		 
 		 found.setGeneReferenceName(geneReferencecName);
 		 found.setPublicationReference(publicationReference);
 		 found.setDate(date);
 		 found.setSample(sample);
 		 found.setGeneSequence(geneSequence);
+		 
+		 for (Project oldProject : found.getProjects()) {
+			 oldProject.getReferenceGenes().remove(found);
+		 }
+		 found.getProjects().clear();
+			
+		 for (Project validatedProject : validatedProjects) {
+			 found.getProjects().add(validatedProject);
+			 validatedProject.getReferenceGenes().add(found);
+			 projectRepo.save(validatedProject);
+		 }
+		 
 		 refgenRepo.save(found);
 	}
 
 	@Override
 	public void deleteReferenceGeneById(long id) throws Exception {
-		refgenRepo.delete(retrieveReferenceGeneById(id));
+		ReferenceGene refGen = retrieveReferenceGeneById(id);
+		
+		for(Project tempP : refGen.getProjects()) {
+			tempP.getReferenceGenes().remove(refGen);
+			projectRepo.save(tempP);
+		}
+		
+		refGen.getProjects().clear();
+		refgenRepo.save(refGen);
+		refgenRepo.delete(refGen);
 	}
-
 }

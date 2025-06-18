@@ -74,6 +74,27 @@ body {
     color: #fff !important;
 }
 
+.expanding-select-wrapper .choices__list--multiple .choices__item {
+    background-color: var(--choice-color);
+    color: white;
+    font-size: 0.9rem;
+}
+
+.expanding-select-wrapper .choices__list--multiple {
+    max-height: 120px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: block;
+    padding-right: 8px;
+}
+
+.expanding-select-wrapper .choices__inner {
+    height: auto !important;
+    min-height: 42px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
 /* ADD BUTTON - TABLE LAYOUT PAGE */
 .add-button-container {
     display: flex;
@@ -694,4 +715,38 @@ textarea.form-input {
 .error-hint {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
+}
+
+/* PAGE LOADER */
+.loading-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+body.loading .loading-overlay {
+    visibility: visible;
+    opacity: 1;
+}
+
+.spinner {
+    border: 6px solid #ccc;
+    border-top: 6px solid var(--choice-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

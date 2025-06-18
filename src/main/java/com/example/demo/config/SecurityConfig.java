@@ -116,6 +116,24 @@ public class SecurityConfig {
 				.requestMatchers("/unit-of-genetics-and-breeding/reference-gene/delete/**").hasAnyAuthority("ADMIN", "GBLEADER")
 				.requestMatchers("/unit-of-genetics-and-breeding/reference-gene/details/**").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
 				
+				.requestMatchers("/unit-of-genetics-and-breeding/sequencing/create").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/sequencing/update/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/sequencing/all").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/sequencing/delete/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/sequencing/details/**").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				
+				.requestMatchers("/unit-of-genetics-and-breeding/gene-expression/create").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/gene-expression/update/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/gene-expression/all").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/gene-expression/delete/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/unit-of-genetics-and-breeding/gene-expression/details/**").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				
+				.requestMatchers("/project/create").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/project/update/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/project/all").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				.requestMatchers("/project/delete/**").hasAnyAuthority("ADMIN", "GBLEADER")
+				.requestMatchers("/project/details/**").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
+				
 				.requestMatchers("/", "/home").hasAnyAuthority("ADMIN", "STAFF", "GBLEADER")
 		        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
 		        .anyRequest().authenticated()

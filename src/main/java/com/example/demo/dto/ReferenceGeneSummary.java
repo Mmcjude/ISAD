@@ -7,7 +7,8 @@ public interface ReferenceGeneSummary {
     String getGeneReferenceName();
     String getPublicationReference();
     LocalDate getDate();
-    SampleSummary getSample();
+    SampleSummary getSample();   
+    int getProjectCount();
 
     interface SampleSummary {
         String getSampleId();

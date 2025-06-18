@@ -25,6 +25,7 @@
                     <th>Publication Reference</th>
                     <th>Fragment Length</th>
                     <th>Sample ID</th>
+                    <th>Associated Projects</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -32,9 +33,13 @@
                 <tr th:each="tempG : ${gfl}">
                     <td th:text="${tempG.geneFragmentId}"></td>
                     <td th:text="${tempG.name}"></td>
-                    <td th:text="${tempG.publicationReference}" class="truncate"></td>
+                    <td th:attr="title=${tempG.publicationReference}"
+                        th:text="${#strings.abbreviate(tempG.publicationReference, 40)}"
+                        class="truncate">
+                    </td>
                     <td th:text="${tempG.fragmentLength}"></td>
                     <td th:text="${tempG.sample != null ? tempG.sample.sampleId : 'NULL'}"></td>
+                    <td th:text="${tempG.projects != null ? tempG.projects.size() : 0} + ' linked'"></td>
                     <td>
                         <form th:action="@{'/unit-of-genetics-and-breeding/gene-fragment-length/details/' + ${tempG.geneFragmentId}}" method="get" style="display:inline;">
                             <button type="submit" class="view-btn">View</button>

@@ -7,15 +7,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.GeneExpression;
 import com.example.demo.model.GeneFragmentLength;
 import com.example.demo.model.Plant;
 import com.example.demo.model.ReferenceGene;
 import com.example.demo.model.Samples;
+import com.example.demo.model.Sequencing;
 import com.example.demo.model.Species;
 import com.example.demo.model.enums.NucleicAcidType;
+import com.example.demo.repo.IGeneExpressionRepo;
 import com.example.demo.repo.IGeneFragmentLengthRepo;
 import com.example.demo.repo.IReferenceGeneRepo;
 import com.example.demo.repo.ISamplesRepo;
+import com.example.demo.repo.ISequencingRepo;
 import com.example.demo.service.ISamplesCRUDService;
 
 import jakarta.transaction.Transactional;
@@ -30,6 +34,12 @@ public class SampleCRUDServiceImpl implements ISamplesCRUDService {
 	
 	@Autowired
 	private IGeneFragmentLengthRepo fragmentRepo;
+	
+	@Autowired
+	private ISequencingRepo seqRepo;
+	
+	@Autowired
+	private IGeneExpressionRepo expRepo;
 	
 	@Override
 	public void insertNewSampleRecord(NucleicAcidType inputNucleicType, LocalDate inputCollectionDate, Species inputSpecies,
@@ -95,6 +105,16 @@ public class SampleCRUDServiceImpl implements ISamplesCRUDService {
 		for(GeneFragmentLength fragment : sample.getFragments()) {
 			fragment.setSample(null);
 			fragmentRepo.save(fragment);
+		}
+		
+		for(Sequencing seq : sample.getSequencing()) {
+			seq.setSample(null);
+			seqRepo.save(seq);
+		}
+		
+		for(GeneExpression exp : sample.getExpressions()) {
+			exp.setSample(null);
+			expRepo.save(exp);
 		}
 		
 		sampleRepo.delete(sample);

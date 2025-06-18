@@ -64,6 +64,19 @@
                         </textarea>
                         <p class="form-error" th:if="${#fields.hasErrors('geneSequence')}" th:errors="*{geneSequence}">Gene Sequence Error</p>
                     </div>
+
+                    <div class="form-group">
+                        <div class="expanding-select-wrapper">
+                            <label for="projects">Project(s):</label>
+                            <select id="projects" th:field="*{projects}" class="form-select choices-multiple" multiple>
+                                <option th:each="project : ${projects}"
+                                        th:value="${project.projectId}"
+                                        th:text="'ID ' + ${project.projectId} + ' - Project Nr. ' + ${project.projectNr} + ' (' + ${project.title} + ')'">
+                                </option>
+                            </select>
+                            <p class="form-error" th:if="${#fields.hasErrors('projects')}" th:errors="*{projects}">Projects Error</p>
+                        </div>    
+                    </div>
                     
                 </div>
             <div class="form-actions">
@@ -84,6 +97,17 @@
                     maxItemCount: -1,
                     shouldSort: false
                 });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Choices('#projects', {
+                removeItemButton: true,
+                searchEnabled: true,
+                placeholderValue: 'Select one or more projects',
+                noResultsText: 'No projects found',
+                shouldSort: false
             });
         });
     </script>

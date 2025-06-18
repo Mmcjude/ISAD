@@ -24,8 +24,11 @@
 
         <section class="dashboard-section">
             <h3>Genetics and Breeding Tables:</h3>
+            <a href="/project/all" class="home-button"><span>Projects</span></a>
             <a href="/unit-of-genetics-and-breeding/sample/all" class="home-button"><span>Samples</span></a>
 			<a href="/unit-of-genetics-and-breeding/species/all" class="home-button"><span>Species</span></a>
+            <a href="/unit-of-genetics-and-breeding/sequencing/all" class="home-button"><span>Sequencing</span></a>
+            <a href="/unit-of-genetics-and-breeding/gene-expression/all" class="home-button"><span>Gene Expression</span></a>
             <a href="/unit-of-genetics-and-breeding/gene-fragment-length/all" class="home-button"><span>Gene Fragment Length</span></a>
             <a href="/unit-of-genetics-and-breeding/reference-gene/all" class="home-button"><span>Reference Gene</span></a>
         </section>
@@ -46,6 +49,13 @@
         <section class="dashboard-section" th:if="${userRole == 'ADMIN'}">
             <h3>Weather Station Table:</h3>
             <a href="/weather-station/all" class="home-button"><span>Weather Station</span></a>
+        </section>
+
+        <div th:if="${userRole == 'ADMIN'}" class="section-divider"></div>
+
+        <section class="dashboard-section" th:if="${userRole == 'ADMIN'}">
+            <h3>User Table:</h3>
+            <a href="/admin/user/all" class="home-button"><span>User Table</span></a>
         </section>
     </main>
 

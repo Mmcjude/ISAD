@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.model.GeneFragmentLength;
 import com.example.demo.service.IGeneFragmentLengthCRUDService;
+import com.example.demo.service.IProjectCRUDService;
 import com.example.demo.service.ISamplesCRUDService;
 
 import jakarta.validation.Valid;
@@ -26,10 +29,14 @@ public class GeneFragmentLengthCRUDController {
 	@Autowired
 	private ISamplesCRUDService sampleService;
 	
+	@Autowired
+	private IProjectCRUDService projectService;
+	
 	@GetMapping("/create") // localhost:8080/unit-of-genetics-and-breeding/gene-fragment-length/create
     public String getControllerCreateGflRecord(Model model) {
         model.addAttribute("gfl", new GeneFragmentLength());
         model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        model.addAttribute("projects", projectService.retrieveAllProjectRecords());
         return "gene-fragment-length/create-gfl-page";
     }
 
@@ -40,12 +47,13 @@ public class GeneFragmentLengthCRUDController {
     	
         if (result.hasErrors()) {
         	model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        	model.addAttribute("projects", projectService.retrieveAllProjectRecords());
         	return "gene-fragment-length/create-gfl-page";
         }
 
         try {            
             gflService.insertNewGeneFragmentLength(gfl.getName(), gfl.getPublicationReference(), 
-            		gfl.getFragmentLength(), gfl.getSample());
+            		gfl.getFragmentLength(), gfl.getSample(), new ArrayList<>(gfl.getProjects()));
             return "redirect:/unit-of-genetics-and-breeding/gene-fragment-length/all";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -83,6 +91,7 @@ public class GeneFragmentLengthCRUDController {
         	GeneFragmentLength foundGfl = gflService.retrieveGeneFragmentLengthById(id);
             model.addAttribute("gfl", foundGfl);
             model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+            model.addAttribute("projects", projectService.retrieveAllProjectRecords());
             return "gene-fragment-length/edit-gfl-page";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
@@ -97,12 +106,13 @@ public class GeneFragmentLengthCRUDController {
             Model model) {
         if (result.hasErrors()) {
         	model.addAttribute("samples", sampleService.retrieveAllSampleRecords());
+        	model.addAttribute("projects", projectService.retrieveAllProjectRecords());
             return "gene-fragment-length/edit-gfl-page";
         }
 
         try {          
             gflService.updateGeneFragmentLengthById(id, gfl.getName(), gfl.getPublicationReference(),
-            		gfl.getFragmentLength(), gfl.getSample());
+            		gfl.getFragmentLength(), gfl.getSample(), new ArrayList<>(gfl.getProjects()));
             return "redirect:/unit-of-genetics-and-breeding/gene-fragment-length/all";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());

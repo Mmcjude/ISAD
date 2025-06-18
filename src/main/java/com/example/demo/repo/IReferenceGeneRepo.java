@@ -22,7 +22,8 @@ public interface IReferenceGeneRepo extends CrudRepository<ReferenceGene, Long> 
 		           r.geneReferenceName AS geneReferenceName,
 		           r.publicationReference AS publicationReference,
 		           r.date AS date,
-		           r.sample AS sample
+		           r.sample AS sample,
+		           SIZE(r.projects) AS projectCount
 		    FROM ReferenceGene r
 		    ORDER BY r.referenceGeneId ASC
 		""")
@@ -33,5 +34,12 @@ public interface IReferenceGeneRepo extends CrudRepository<ReferenceGene, Long> 
 	public abstract List<ReferenceGeneLinkView> findLinkViewsBySampleId(long sampleId);
 
 	public abstract Optional<ReferenceGene> findByGeneReferenceName(String trim);
+	
+	@Query("""
+			SELECT r.referenceGeneId AS referenceGeneId, r.geneReferenceName AS geneReferenceName
+			FROM ReferenceGene r JOIN r.projects p
+			WHERE p.projectId = :projectId
+			""")
+	public abstract	List<ReferenceGeneLinkView> findLinkViewsByProjectId(long projectId);
 
 }
